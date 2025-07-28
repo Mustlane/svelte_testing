@@ -5,7 +5,6 @@ import * as auth from '$lib/server/auth';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import type { Actions, PageServerLoad } from './$types';
-import { stringify } from 'querystring';
 
 export const load: PageServerLoad = async (event) => {
 	if (event.locals.user) {
@@ -46,10 +45,8 @@ export const actions: Actions = {
 			return fail(400, { message: 'Incorrect username or password' });
 		}
 
-		const sessionToken = auth.generateSessionToken();
-		const session = await auth.createSession(sessionToken, existingUser.id);
-		auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
-
+		const session = await auth.createSession(session.id, existingUser.id);
+		auth.setSessionTokenCookie(event, session.id, session.expiresAt);
 		return redirect(302, '/');
 	},
 	register: async (event) => {
@@ -64,7 +61,6 @@ export const actions: Actions = {
 			return fail(400, { message: 'Invalid password' });
 		}
 
-		const userId = generateUserId();
 		const passwordHash = await hash(password, {
 			// recommended minimum parameters
 			memoryCost: 19456,
@@ -74,22 +70,16 @@ export const actions: Actions = {
 		});
 
 		try {
-			await db.insert(table.user).values({ id: userId, username, passwordHash });
-
-			const sessionToken = auth.generateSessionToken();
-			const session = await auth.createSession(sessionToken, userId);
+			const [user] = await db.insert(table.user).values({ username, passwordHash }).returning({ id: table.user.id});
+			const session = await auth.createSession(session.id, user.id);
 			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
-		} catch {
+		} catch (error){
+			console.error('Registration error:', error);
 			return fail(500, { message: 'An error has occurred' });
 		}
 		return redirect(302, '/');
 	}
 };
-
-function generateUserId() {
-	const id = crypto.randomUUID();
-	return id;
-}
 
 function validateUsername(username: unknown): username is string {
 	return (

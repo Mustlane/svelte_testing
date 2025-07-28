@@ -9,20 +9,15 @@ const DAY_IN_MS = 1000 * 60 * 60 * 24;
 
 export const sessionCookieName = 'auth-session';
 
-export function generateSessionToken() {
-	const bytes = crypto.getRandomValues(new Uint8Array(18));
-	const token = encodeBase64url(bytes);
-	return token;
-}
 
-export async function createSession(token: string, userId: string) {
-	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+
+export async function createSession(sessionId: string, userId: string) {
 	const session: table.Session = {
 		id: sessionId,
 		userId,
 		expiresAt: new Date(Date.now() + DAY_IN_MS * 30)
 	};
-	await db.insert(table.session).values(session);
+	await db.insert(table.session).values(session).returning({ id: table.session.id});
 	return session;
 }
 
