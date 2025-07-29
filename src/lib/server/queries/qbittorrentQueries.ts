@@ -5,7 +5,7 @@ import axios, { isCancel, AxiosError } from "axios";
 let qbtClient: any;
 let qbittorrentPassword: string = process.env.QBITTORRENT_PASSWORD!;
 let qbitTorrentCookie: string | undefined = "";
-type Torrent = { uploaded: number; size: number; ratio: number };
+type Torrent = { uploaded: number; downloaded: number; size: number; ratio: number };
 var torrents: Torrent[] = []
 
 const qbitReady = qbit
@@ -114,6 +114,19 @@ async function getRatio() {
   return Number(ratio.toFixed(3))
 }
 
+async function getRealRatio() {
+  let uploadedSum = 0;
+  let downloadedSum: number = 0;
+  torrents.forEach(torrent => {
+    const uploaded = torrent.uploaded;
+    uploadedSum += uploaded
+    const downloaded = torrent.downloaded;
+    downloadedSum += downloaded
+  });
+  const ratio: number = uploadedSum / downloadedSum
+  return Number(ratio.toFixed(3))
+}
+
 async function getSnatched() {
   let snatched: number = 0;
   torrents.forEach(torrent => {
@@ -147,4 +160,5 @@ export {
   getSnatched,
   getStalled,
   getSeeding,
+  getRealRatio
 };

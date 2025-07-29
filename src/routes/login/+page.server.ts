@@ -4,6 +4,7 @@ import { eq } from 'drizzle-orm';
 import * as auth from '$lib/server/auth';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
+import bcrypt from "bcrypt";
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async (event) => {
@@ -35,17 +36,14 @@ export const actions: Actions = {
 			return fail(400, { message: 'Incorrect username or password' });
 		}
 
-		const validPassword = await verify(existingUser.passwordHash, password, {
-			memoryCost: 19456,
-			timeCost: 2,
-			outputLen: 32,
-			parallelism: 1
-		});
+
+		const validPassword = await bcrypt.compare(password, existingUser.passwordHash)
+
 		if (!validPassword) {
 			return fail(400, { message: 'Incorrect username or password' });
 		}
 
-		const session = await auth.createSession(session.id, existingUser.id);
+		const session = await auth.createSession(existingUser.id);
 		auth.setSessionTokenCookie(event, session.id, session.expiresAt);
 		return redirect(302, '/');
 	},
@@ -61,18 +59,13 @@ export const actions: Actions = {
 			return fail(400, { message: 'Invalid password' });
 		}
 
-		const passwordHash = await hash(password, {
-			// recommended minimum parameters
-			memoryCost: 19456,
-			timeCost: 2,
-			outputLen: 32,
-			parallelism: 1
-		});
+
+		const passwordHash = await bcrypt.hash(password, 12);
 
 		try {
 			const [user] = await db.insert(table.user).values({ username, passwordHash }).returning({ id: table.user.id});
-			const session = await auth.createSession(session.id, user.id);
-			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
+			const session = await auth.createSession(user.id);
+			auth.setSessionTokenCookie(event, session.id, session.expiresAt);
 		} catch (error){
 			console.error('Registration error:', error);
 			return fail(500, { message: 'An error has occurred' });

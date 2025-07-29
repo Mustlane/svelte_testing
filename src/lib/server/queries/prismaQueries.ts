@@ -1,21 +1,20 @@
-import { PrismaClient } from "../generated/prisma";
-import dayjs from "dayjs";
-const prisma = new PrismaClient();
+import * as schema from '../db/schema';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import dayjs from 'dayjs'
+import { eq, ne, gt, gte, count } from "drizzle-orm";
+
+const dbUrl = process.env.DATABASE_URL
+const db = drizzle({ schema });
 
 async function getEnabledUsers() {
-  const getEnabledUsers = await prisma.user.count({
-  })
+  const getEnabledUsers = await db.select({ count: count() }).from(schema.user)
   return getEnabledUsers
 }
 
 async function getThisDayUsers() {
-  const getThisDayUsers = await prisma.user.findMany({
-    where: {
-      lastSeen: {
-        gte: dayjs().subtract(1, "day").toISOString(),
-      },
-    },
-  });
+  const getThisDayUsers = await db.select()
+  .from(schema.user)
+  .where(gte(schema.user.lastSeen, dayjs().subtract(1, 'day').toDate()))
   return getThisDayUsers.length
 }
 

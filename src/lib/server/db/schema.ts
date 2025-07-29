@@ -1,6 +1,5 @@
 import { relations } from 'drizzle-orm';
 import { pgTable, primaryKey, serial, integer, text, timestamp, uuid, boolean, varchar, bigint } from 'drizzle-orm/pg-core';
-// import { request } from 'http';
 
 export const user = pgTable('user', {
 	id: uuid('id').primaryKey().defaultRandom().notNull(),
@@ -50,7 +49,7 @@ export const folder = pgTable('folder', {
 })
 
 export const stats = pgTable('stats', {
-	id: uuid('id').primaryKey().defaultRandom().notNull(),
+	id: integer().default(1),
 	maxUsers: integer('max_users').default(0),
 	enabledUsers: integer('enabled_users').default(0),
 	currentUsers: integer('current_users').default(0),
@@ -58,7 +57,7 @@ export const stats = pgTable('stats', {
 	thisWeekUsers: integer('this_week_users').default(0),
 	thisMonthUsers: integer('this_month_users').default(0),
 	requests: integer('requests').default(0),
-	requestDone: integer('requests_done').default(0),
+	requestsDone: integer('requests_done').default(0),
 	movies: integer('movies').default(0),
 	series: integer('series').default(0),
 	artists: integer('artists').default(0),
@@ -73,7 +72,7 @@ export const stats = pgTable('stats', {
 	qbitStalled: integer('stalled').default(0),
 	qbitSeeding: integer('seeding').default(0),
 	qbitAvgRatio: integer('avg_ratio').default(0),
-	spaceTaken: bigint({mode: 'number'}).default(0)
+	spaceTaken: bigint({mode: 'bigint'})
 })
 
 

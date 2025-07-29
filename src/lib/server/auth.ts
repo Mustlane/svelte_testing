@@ -1,7 +1,5 @@
 import type { RequestEvent } from '@sveltejs/kit';
 import { eq } from 'drizzle-orm';
-import { sha256 } from '@oslojs/crypto/sha2';
-import { encodeBase64url, encodeHexLowerCase } from '@oslojs/encoding';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 
@@ -11,18 +9,16 @@ export const sessionCookieName = 'auth-session';
 
 
 
-export async function createSession(sessionId: string, userId: string) {
-	const session: table.Session = {
-		id: sessionId,
+export async function createSession(userId: string) {
+	const session = {
 		userId,
 		expiresAt: new Date(Date.now() + DAY_IN_MS * 30)
 	};
-	await db.insert(table.session).values(session).returning({ id: table.session.id});
-	return session;
+	const [newSession]= await db.insert(table.session).values(session).returning();
+	return newSession;
 }
 
-export async function validateSessionToken(token: string) {
-	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+export async function validateSessionToken(sessionId: string) {
 	const [result] = await db
 		.select({
 			// Adjust user table here to tweak returned data
