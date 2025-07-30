@@ -31,7 +31,7 @@ export const file = pgTable('file', {
 	id: uuid('id').primaryKey().defaultRandom().notNull(),
 	name: varchar('name', { length: 150}).notNull(),
 	uploadedAt: timestamp('uploaded_at', {withTimezone: true, mode: 'date'}).notNull().defaultNow(),
-	url: text('url'),
+	url: text('url').notNull(),
 	size: bigint('size', { mode: 'number' }).default(0),
 	folderId: uuid('folder_id').references(() => folder.id),
 	ownerId: uuid('owner_id').references(() => user.id)

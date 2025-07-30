@@ -1,17 +1,16 @@
-import * as prismaQueries from "../queries/prismaQueries";
+import * as drizzleQueries from "../queries/drizzleQueries";
 import * as arrQueries from "../queries/arrQueries";
 import * as qbittorrentQueries from "../queries/qbittorrentQueries";
 import * as fileQueries from "../queries/fileQueries";
 import * as fsQueries from "../queries/fs";
 import 'dotenv/config'
 import * as schema from './schema';
-import { drizzle } from 'drizzle-orm/postgres-js';
-const dbUrl = process.env.DATABASE_URL
+import { drizzle } from 'drizzle-orm/node-postgres';
 
-const db = drizzle({ schema });
+const db = drizzle(process.env.DATABASE_URL);
 
 const queries = {
-  ...prismaQueries,
+  ...drizzleQueries,
   ...arrQueries,
   ...qbittorrentQueries,
   ...fileQueries,

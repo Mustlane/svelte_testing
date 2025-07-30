@@ -47,6 +47,7 @@
 		"dayjs": "^1.11.13",
 		"drizzle-kit": "^0.31.4",
 		"drizzle-orm": "^0.40.0",
+		"node-postgres": "^0.6.2",
 		"postgres": "^3.4.5",
 		"qbittorrent-api-v2": "^1.2.2"
 	}
