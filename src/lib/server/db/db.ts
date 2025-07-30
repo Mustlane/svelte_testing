@@ -5,9 +5,10 @@ import * as fileQueries from "../queries/fileQueries";
 import * as fsQueries from "../queries/fs";
 import 'dotenv/config'
 import * as schema from './schema';
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { eq } from "drizzle-orm";
 
-const db = drizzle(process.env.DATABASE_URL);
+import { db } from '../db/index'
+
 
 const queries = {
   ...drizzleQueries,
@@ -68,10 +69,8 @@ async function updateStats(
 }
 
 async function getStats() {
-  const result = await db.select().from(schema.stats);
-  {
-    id: 1
-  }
+  const result = await db.select().from(schema.stats)
+  .where(eq(schema.stats.id, 1))
   return result
 }
 

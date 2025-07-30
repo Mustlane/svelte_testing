@@ -1,53 +1,48 @@
 import * as schema from '../db/schema';
-import { drizzle } from 'drizzle-orm/node-postgres';
 import dayjs from 'dayjs'
-import { eq, ne, gt, gte, count } from "drizzle-orm";
+import { eq, gte, count } from "drizzle-orm";
 
-import postgres from 'postgres';
 
-if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set')
+import { db } from '../db/index';
 
-const client = postgres(process.env.DATABASE_URL);
 
-const db = drizzle(client, { schema });
-
-async function getEnabledUsers() {
-  const getEnabledUsers = await db.select({ count: count() }).from(schema.user)
-  return getEnabledUsers
+async function getEnabledUsers(): Promise<number> {
+  const result = await db.select({ count: count() }).from(schema.user).then((res) => res[0])
+  return result.count
 }
 
 async function getThisDayUsers() {
-  const getThisDayUsers = await db.select()
+  const result = await db.select({ count: count() })
   .from(schema.user)
-  .where(gte(schema.user.lastSeen, dayjs().subtract(1, 'day').toDate()))
-  return getThisDayUsers.length
+  .where(gte(schema.user.lastSeen, dayjs().subtract(1, 'day').toDate())).then((res) => res[0])
+  return result.count
 }
 
 async function getThisWeekUsers() {
-  const getThisWeekUsers = await db.select()
+  const result = await db.select({ count: count() })
     .from(schema.user)
-    .where(gte(schema.user.lastSeen, dayjs().subtract(7, 'day').toDate()))
-  return getThisWeekUsers.length
+    .where(gte(schema.user.lastSeen, dayjs().subtract(7, 'day').toDate())).then((res) => res[0])
+  return result.count
   };
 
 
 async function getThisMonthUsers() {
-  const getThisMonthUsers = await db.select()
+  const result = await db.select({ count: count() })
   .from(schema.user)
-  .where(gte(schema.user.lastSeen, dayjs().subtract(7, 'day').toDate()))
-  return getThisMonthUsers.length
+  .where(gte(schema.user.lastSeen, dayjs().subtract(7, 'day').toDate())).then((res) => res[0])
+  return result.count
   }
 
 async function getRequests() {
-  const requests = await db.select( { count: count() }).from(schema.user)
-  return requests
+  const result = await db.select( { count: count() }).from(schema.user).then((res) => res[0])
+  return result.count
 }
 
 async function getDoneRequests() {
-  const doneRequests = await db.select()
+  const result = await db.select({ count: count()})
   .from(schema.user)
-  .where(eq(schema.request.isDone, true))
-  return doneRequests.length
+  .where(eq(schema.request.isDone, true)).then((res) => res[0])
+  return result.count
 }
 
 async function userCreate(username: string, password: string) {

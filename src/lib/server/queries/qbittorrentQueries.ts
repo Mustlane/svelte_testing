@@ -1,21 +1,13 @@
 import "dotenv/config";
 import qs from "qs";
-import qbit from "qbittorrent-api-v2";
-import axios, { isCancel, AxiosError } from "axios";
-let qbtClient: any;
-let qbittorrentPassword: string = process.env.QBITTORRENT_PASSWORD!;
+import axios from "axios";
+const qbittorrentPassword: string = process.env.QBITTORRENT_PASSWORD!;
 let qbitTorrentCookie: string | undefined = "";
 type Torrent = { uploaded: number; downloaded: number; size: number; ratio: number };
-var torrents: Torrent[] = []
-
-const qbitReady = qbit
-  .connect("http://localhost:8080", "MustlaneSERVER", qbittorrentPassword)
-  .then((qbt) => {
-    qbtClient = qbt;
-  });
+let torrents: Torrent[] = []
 
 async function login() {
-  let data = {
+  const data = {
     username: "MustlaneSERVER",
     password: qbittorrentPassword,
   };
@@ -32,10 +24,30 @@ async function login() {
   });
 }
 
-async function getMovies() {
+async function ensureAuthenticated(){
   if (!qbitTorrentCookie) {
     await login();
   }
+}
+
+async function getTorrents() {
+  await ensureAuthenticated()
+
+  const response = await axios({
+    method: 'get',
+    url: 'http://localhost:8080/api/v2/torrents/info',
+    headers: {
+      Cookie: qbitTorrentCookie,
+    },
+    responseType: "json",
+  });
+  torrents = response.data
+  return torrents.length
+}
+
+async function getMovies() {
+  await ensureAuthenticated()
+
   const response = await axios({
     method: "get",
     url: `http://localhost:8080/api/v2/torrents/info?category=movies`,
@@ -50,9 +62,8 @@ async function getMovies() {
 }
 
 async function getSeries() {
-  if (!qbitTorrentCookie) {
-    await login();
-  }
+  await ensureAuthenticated()
+
   const response = await axios({
     method: "get",
     url: `http://localhost:8080/api/v2/torrents/info?category=series`,
@@ -66,10 +77,10 @@ async function getSeries() {
   return series.length;
 }
 
+
 async function getAlbums() {
-  if (!qbitTorrentCookie) {
-    await login();
-  }
+  await ensureAuthenticated()
+
   const response = await axios({
     method: "get",
     url: `http://localhost:8080/api/v2/torrents/info?category=music`,
@@ -80,12 +91,6 @@ async function getAlbums() {
   });
   const music = response.data;
   return music.length;
-}
-
-async function getTorrents() {
-  await qbitReady;
-  torrents = await qbtClient.torrents();
-  return Number(torrents.length);
 }
 
 async function getUploaded() {
@@ -137,19 +142,38 @@ async function getSnatched() {
   return snatched;
 }
 
-async function getStalled(filter = "stalled") {
-  await qbitReady;
-  const torrents = await qbtClient.torrents(filter);
-  return torrents.length;
+async function getStalled() {
+  await ensureAuthenticated()
+
+  const response = await axios({
+    method: "get",
+    url: `http://localhost:8080/api/v2/torrents/info?filter=stalled`,
+    headers: {
+      Cookie: qbitTorrentCookie,
+    },
+    responseType: "json",
+  });
+  const stalled = response.data;
+  return stalled.length;
 }
 
-async function getSeeding(filter = "seeding") {
-  await qbitReady;
-  const torrents = await qbtClient.torrents(filter);
-  return torrents.length;
+async function getSeeding() {
+  await ensureAuthenticated()
+
+  const response = await axios({
+    method: "get",
+    url: `http://localhost:8080/api/v2/torrents/info?filter=seeding`,
+    headers: {
+      Cookie: qbitTorrentCookie,
+    },
+    responseType: "json",
+  });
+  const seeding = response.data;
+  return seeding.length;
 }
 
 export {
+  ensureAuthenticated,
   getMovies,
   getSeries,
   getAlbums,

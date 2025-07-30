@@ -1,12 +1,8 @@
 import fs from "fs-extra";
 import * as schema from '../db/schema';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { eq, ne, gt, gte, count, and, isNull } from "drizzle-orm";
-import postgres from 'postgres';
+import { eq, and, isNull } from "drizzle-orm";
 
-if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL is not set')
-const client = postgres(process.env.DATABASE_URL);
-const db = drizzle(client, { schema });
+import { db } from '../db/index';
 
 
 async function folderGetAll(id: string){
@@ -49,7 +45,7 @@ async function folderChangePublic(folderId: string, publicize: boolean) {
       await db.update(schema.folder)
       .set({ isPublic: false })
       .where(eq(schema.folder.id, folderId))
-
+    }}
 
 
 async function addFile(ownerId: string, fileName: string, path: string, folderId?: string) {
@@ -67,7 +63,7 @@ async function addFile(ownerId: string, fileName: string, path: string, folderId
     }
 };
 
-async function deleteFile(fileId: string, url: any) {
+async function deleteFile(fileId: string, url: string) {
   await db.delete(schema.file)
   .where(eq(schema.file.id, fileId))
 
@@ -102,6 +98,14 @@ async function deleteFileFromFolder(folderId: string, fileId: string) {
 
 }
 
-export function{
-    folderGetAll
+export {
+  folderGetAll,
+  filesGetWithoutFolder,
+  createFolder,
+  openFolder,
+  folderChangePublic,
+  addFile,
+  deleteFile,
+  deleteFolder,
+  deleteFileFromFolder
 }

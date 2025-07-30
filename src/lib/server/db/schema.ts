@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, primaryKey, serial, integer, text, timestamp, uuid, boolean, varchar, bigint } from 'drizzle-orm/pg-core';
+import { pgTable, primaryKey, integer, text, timestamp, uuid, boolean, varchar, bigint } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('user', {
 	id: uuid('id').primaryKey().defaultRandom().notNull(),
