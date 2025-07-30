@@ -74,8 +74,6 @@ async function getStats() {
   return result
 }
 
-updateStats()
-
 export {
   updateStats,
   getStats

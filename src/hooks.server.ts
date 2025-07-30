@@ -1,5 +1,6 @@
 import type { Handle } from '@sveltejs/kit';
 import * as auth from '$lib/server/auth';
+import { updateStats } from './lib/server/db/db'
 
 const handleAuth: Handle = async ({ event, resolve }) => {
 	const sessionToken = event.cookies.get(auth.sessionCookieName);
@@ -23,4 +24,11 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
+/** @type {import('@sveltejs/kit').ServerInit} */
+export async function init() {
+	await updateStats()
+}
+
+
 export const handle: Handle = handleAuth;
+

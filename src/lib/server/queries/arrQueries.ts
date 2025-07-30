@@ -1,4 +1,4 @@
-import axios, {isCancel, AxiosError} from 'axios';
+import axios from 'axios';
 import 'dotenv/config';
 
 // async function getArtists(){
