@@ -34,13 +34,13 @@ async function getThisMonthUsers() {
   }
 
 async function getRequests() {
-  const result = await db.select( { count: count() }).from(schema.user).then((res) => res[0])
+  const result = await db.select( { count: count() }).from(schema.request).then((res) => res[0])
   return result.count
 }
 
 async function getDoneRequests() {
   const result = await db.select({ count: count()})
-  .from(schema.user)
+  .from(schema.request)
   .where(eq(schema.request.isDone, true)).then((res) => res[0])
   return result.count
 }

@@ -1,0 +1,181 @@
+@use 'variables';
+@use 'sass:color';
+// GENERAL
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+body {
+    background-color: variables.$body;
+    box-sizing: border-box;
+    color: variables.$text;
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 0 8px;
+    font-family: variables.$system_ui;
+}
+
+#wrapper {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    max-width: 1020px;
+}
+
+// HEADER
+
+header {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+
+    img {
+        height: 75px;
+        padding: 20px 0 0 20px;
+    }
+}
+
+#userinfo {
+    margin-top: 20px;
+
+    ul {
+        display: flex;
+        flex-direction: row;
+        list-style: none;
+        gap: 10px;
+
+        li {
+
+            a, span {
+                font-size: 13px;
+            }
+
+            a {
+                text-decoration: none;
+                color: variables.$userinfo_a;
+            }
+
+            span {
+                color: variables.$text;
+            }
+
+            a:hover {
+                color: variables.$userinfo_hover
+            }
+        }
+    }
+}
+
+// NAVBAR
+
+#navbar {
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px 5px 0 0;
+
+    div {
+        display: flex;
+        flex-direction: row;
+        
+
+        ul {
+            width: 100%;
+            display: flex;
+            flex-flow: row nowrap;
+        }
+    }
+}
+
+// NAVBAR - MENU
+
+#menu {
+    border-radius: 7px 7px 0 0;
+    overflow: hidden;
+
+    ul {
+        width: 100%;
+
+        li {
+            list-style: none;
+            line-height: 0;
+
+
+            &:not(:last-child) {
+                width: 100%;
+                background-color: variables.$menu;
+            }
+
+            &:last-child>img {
+                width: 50px;
+            };
+
+            a {
+                display: block;
+                height: 100%;
+                text-decoration: none;
+                text-align: center;
+                line-height: 50px;
+                font-size: 13px;
+                font-weight: 900;
+                color: variables.$text;
+
+                &:hover {
+                    background-color: variables.$menu_a_hover;
+                }
+
+                &:active {
+                    background-color: variables.$menu_a_active;
+                }
+            }
+
+            div > a {
+        display: none;
+        }
+        }
+}
+}
+
+
+@for $i from 1 through 7 {
+    #menu > ul > li:nth-child(7n - #{$i}) {
+        background-color: darken($color: variables.$menu, $amount: variables.$step_str * $i);
+    }
+}
+
+
+
+// NAVBAR - SEARCHBARS
+
+#searchbars {
+    background-color: variables.$searchbar_ul;
+
+    ul {
+        display: flex;
+        justify-content: space-evenly;
+        gap: 10px;
+        margin: 10px 10px;
+
+        li {
+            display: inline-block;
+            flex: 1 1 auto;
+
+            input {
+                width: 100%;
+                padding: 5px;
+                height: 28px;
+                border: none;
+                background-color: variables.$searchbar_input_bg;
+                color: variables.$text;
+
+                &:focus {
+                    background-color: variables.$body;
+                    outline: none;
+                    color: variables.$searchbar_font_focus;
+                }
+            }
+        }
+    }
+}

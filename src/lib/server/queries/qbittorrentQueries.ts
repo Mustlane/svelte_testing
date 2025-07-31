@@ -1,7 +1,10 @@
 import "dotenv/config";
 import qs from "qs";
 import axios from "axios";
+
+if (!process.env.QBITTORRENT_PASSWORD) throw new Error (`QBITTORRENT_PASSWORD hasn't been found`)
 const qbittorrentPassword: string = process.env.QBITTORRENT_PASSWORD!;
+
 let qbitTorrentCookie: string | undefined = "";
 type Torrent = { uploaded: number; downloaded: number; size: number; ratio: number };
 let torrents: Torrent[] = []
@@ -94,17 +97,17 @@ async function getAlbums() {
 }
 
 async function getUploaded() {
-    let uploadedTotal: number = 0;
+    let uploadedTotal = BigInt(0);
     torrents.forEach(torrent => {
-        uploadedTotal += torrent.uploaded
+        uploadedTotal += BigInt(torrent.uploaded)
     })
     return uploadedTotal
 }
 
 async function getDownloaded() {
-    let downloadedTotal: number = 0;
+    let downloadedTotal = BigInt(0);
     torrents.forEach(torrent => {
-        downloadedTotal += torrent.size
+        downloadedTotal += BigInt(torrent.size)
     })
     return downloadedTotal
 }

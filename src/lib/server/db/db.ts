@@ -65,7 +65,6 @@ async function updateStats(
         qbitRealRatio: await qbitRealRatio(),
         spaceTaken: await spaceTaken(),
   })
-  console.log(movies)
 }
 
 async function getStats() {

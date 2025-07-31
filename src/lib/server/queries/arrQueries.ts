@@ -11,15 +11,20 @@ import 'dotenv/config';
 // const artists = await got(url, options).json<any[]>();
 // return artists.length;
 // }
+if (!process.env.LIDARR_API) throw new Error (`LIDARR_API hasn't been found`)
+const lidarrApiKey = process.env.LIDARR_API
+
+if (!process.env.LAZYLIBRARIAN_API) throw new Error (`LAZYLIBRARIAN_API hasn't been found`)
+const llApiKey = process.env.LAZYLIBRARIAN_API
+
 
 async function getArtists(){
-const apiKey = process.env.LIDARR_API
 const response = await axios({
 	method: 'get',
 	url: `http://localhost:8686/api/v1/artist`,
 	responseType: 'json',
 	headers: {
-		'X-Api-Key': apiKey
+		'X-Api-Key': lidarrApiKey
 	}
 })
 	const artists = response.data
@@ -27,10 +32,9 @@ const response = await axios({
 }
 
 async function getBooks(){
-const apiKey = process.env.LAZYLIBRARIAN_API
 const response = await axios({
 	method: 'get',
-	url: `http://localhost:5299/api?apikey=${apiKey}&cmd=getAllBooks`,
+	url: `http://localhost:5299/api?apikey=${llApiKey}&cmd=getAllBooks`,
 	responseType: 'json'
 })
 	const books = response.data
@@ -38,10 +42,9 @@ const response = await axios({
 }
 
 async function getAuthors(){
-const apiKey = process.env.LAZYLIBRARIAN_API
 const response = await axios({
 	method: 'get',
-	url: `http://localhost:5299/api?apikey=${apiKey}&cmd=getIndex`,
+	url: `http://localhost:5299/api?apikey=${llApiKey}&cmd=getIndex`,
 	responseType: 'json'
 })
 	const authors = response.data

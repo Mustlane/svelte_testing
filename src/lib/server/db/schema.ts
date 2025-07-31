@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, primaryKey, integer, text, timestamp, uuid, boolean, varchar, bigint } from 'drizzle-orm/pg-core';
+import { pgTable, primaryKey, integer, text, timestamp, uuid, boolean, varchar, bigint, doublePrecision } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('user', {
 	id: uuid('id').primaryKey().defaultRandom().notNull(),
@@ -64,15 +64,15 @@ export const stats = pgTable('stats', {
 	albums: integer('albums').default(0),
 	authors: integer('authors').default(0),
 	books: integer('books').default(0),
-	qbitUploadedSize: integer('uploaded').default(0),
-	qbitDownloadedSize: integer('downloaded').default(0),
-	qbitRealRatio: integer('real_ratio').default(0),
+	qbitUploadedSize: bigint('uploaded', { mode: 'bigint' }),
+	qbitDownloadedSize: bigint('downloaded', { mode: 'bigint' }),
+	qbitRealRatio: doublePrecision('real_ratio').default(0),
 	qbitTorrents: integer('torrents').default(0),
 	qbitSnatched: integer('snatched').default(0),
 	qbitStalled: integer('stalled').default(0),
 	qbitSeeding: integer('seeding').default(0),
-	qbitAvgRatio: integer('avg_ratio').default(0),
-	spaceTaken: bigint({mode: 'bigint'})
+	qbitAvgRatio: doublePrecision('avg_ratio').default(0),
+	spaceTaken: bigint({ mode: 'bigint' })
 })
 
 
