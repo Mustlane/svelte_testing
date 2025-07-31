@@ -27,5 +27,6 @@ function requireLogin() {
 		return redirect(302, '/login');
 	}
 
-	return locals.user;
+	return locals.user
+	
 }

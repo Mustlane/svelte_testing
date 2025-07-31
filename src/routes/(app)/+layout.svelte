@@ -1,24 +1,48 @@
 <script lang="ts">
-    let { children } = $props();
+    let { children, data } = $props();
     import menu from '$lib/images/menu.svg';
     import logo from '$lib/images/M_letter_v01.svg'
-	import type { LayoutServerData } from './$types';
+	  import type { LayoutServerData } from './$types';
     import type { LayoutData } from '../$types';
-	import { localsName } from 'ejs';
-    let username = 'Mustlane'
+    import { onMount } from 'svelte';
+  
     let info = {
         up: 100,
         down: 100,
         ratio: 1
     }
-    
-    let hasJellyfin = $state(true)
-    let hasImmich = $state(true)
-    let hasSymphonium = $state(true)
+
+  let isDropdownOpen = $state(false)
+
+  const handleDropdownHover = () => {
+    isDropdownOpen = !isDropdownOpen
+    console.log(isDropdownOpen)
+  }
+
+onMount(() => {
+  const firstFather = document.getElementById('first_father');
+  const secondFather = document.getElementById('second_father');
+  const firstDropdown = document.getElementById('first_dropdown');
+  const secondDropdown = document.getElementById('second_dropdown');
+
+  if (firstFather && secondFather && firstDropdown && secondDropdown) {
+    const getValue = (child: HTMLElement) => getComputedStyle(child).getPropertyValue('background-color');
+
+    const changeColors = () => {
+      firstDropdown.style.backgroundColor = getValue(firstFather);
+      secondDropdown.style.backgroundColor = getValue(secondFather);
+    };
+
+    changeColors();
+    console.log('Hello, world');
+  } else {
+    console.warn("Some elements not found in the DOM.");
+  }
+});
 
 </script>
 
-{#if username}
+{#if data.user}
 <body id="bg">
   <div id="wrapper">
     <header id="header">
@@ -57,9 +81,9 @@
     <div id="navbar">
       <div id="menu">
         <ul>
-          <li id="Containers" class="dropdown">
-            <a href="/">Containers</a>
-            <div class="dropdown_content">
+          <li id='first_father' class="dropdown">
+            <a href="/" class="dropdown_a">Containers</a>
+            <div class="dropdown_content" id="first_dropdown">
               <a href="https://jellyfin.mustlane.com">Jellyfin</a>
               <a href="https://mustlane.com">Jellyseer</a>
               <a href="https://mustlane.com">Immich</a>
@@ -74,9 +98,9 @@
           <li id="Support">
             <a href="/">Support</a>
           </li>
-          <li id="Username" class="dropdown">
-            <a href="/"> {} </a>
-            <div class="dropdown_content">
+          <li id='second_father' class="dropdown">
+            <a href="/"> {data.user.username} </a>
+            <div class="dropdown_content" id="second_dropdown">
               <a href="/profile">Profile</a>
               <a href="/">Settings</a>
               <a href="/">Log Out</a>
@@ -89,7 +113,7 @@
       </div>
       <div id="searchbars">
         <ul>
-          {#if hasJellyfin}
+          {#if data.user.hasVideo}
           <li>
               <input id="Movies" placeholder="Movies">
           </li>
@@ -97,12 +121,12 @@
               <input id="Series" placeholder="Series">
           </li>
           {/if}
-          {#if hasSymphonium}
+          {#if data.user.hasAudio}
           <li>
               <input id="Music" placeholder="Music">
           </li>
           {/if}
-          {#if hasImmich}
+          {#if data.user.hasMedia}
           <li>
               <input id="Images" placeholder="Images">
           </li>
@@ -219,15 +243,31 @@ header {
 
 #menu {
     border-radius: 7px 7px 0 0;
-    overflow: hidden;
-
     ul {
         width: 100%;
 
-        li {
-            list-style: none;
-            line-height: 0;
+      li {
+          position: relative;
+          list-style: none;
+          line-height: 0;
 
+          &:first-child {
+            border-radius: 7px 0 0 0;
+          }
+
+          &:last-child {
+            border-radius: 0 7px 0 0;
+          }
+
+          div {
+            display: none;
+          }
+
+          &.dropdown:hover .dropdown_content {
+            display: inline-flex;
+            width: 100%;
+            flex-direction: column;
+          }
 
             &:not(:last-child) {
                 width: 100%;
@@ -257,13 +297,23 @@ header {
                 }
             }
 
-            div > a {
-        display: none;
-        }
-        }
-}
-}
+            div {
+              position: absolute;
+              top: 100%;
+              left: 0;
+              background-color: variables.$menu;
+              min-width: 100%;
 
+              a {
+              font-weight: 500;
+              text-align: left;
+              line-height: 32px;
+              padding: 0 8px;
+              }
+            }
+        }
+}
+}
 
 @for $i from 1 through 7 {
     #menu > ul > li:nth-child(7n - #{$i}) {

@@ -69,7 +69,7 @@ async function updateStats(
 
 async function getStats() {
   const result = await db.select().from(schema.stats)
-  .where(eq(schema.stats.id, 1))
+  .where(eq(schema.stats.id, 1)).then((res) => res[0])
   return result
 }
 

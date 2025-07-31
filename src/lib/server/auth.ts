@@ -21,7 +21,7 @@ export async function createSession(userId: string) {
 export async function validateSessionToken(sessionId: string) {
 	const [result] = await db
 		.select({
-			user: { id: table.user.id, username: table.user.username },
+			user: { id: table.user.id, username: table.user.username, hasAudio: table.user.hasAudio, hasVideo: table.user.hasVideo, hasMedia: table.user.hasMedia,},
 			session: table.session
 		})
 		.from(table.session)
