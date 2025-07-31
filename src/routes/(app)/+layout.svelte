@@ -2,7 +2,7 @@
     let { children, data } = $props();
     import menu from '$lib/images/menu.svg';
     import logo from '$lib/images/M_letter_v01.svg'
-	  import type { LayoutServerData } from './$types';
+    import type { LayoutServerData } from './$types';
     import type { LayoutData } from '../$types';
     import { onMount } from 'svelte';
   
@@ -12,37 +12,53 @@
         ratio: 1
     }
 
-  let isDropdownOpen = $state(false)
+    if (typeof window !== 'undefined') {
+        requestAnimationFrame(() => {
+                const firstFather = document.getElementById('first_father');
+                const secondFather = document.getElementById('second_father');
+                const firstDropdown = document.getElementById('first_dropdown');
+                const secondDropdown = document.getElementById('second_dropdown');
 
-  const handleDropdownHover = () => {
-    isDropdownOpen = !isDropdownOpen
-    console.log(isDropdownOpen)
-  }
 
-onMount(() => {
-  const firstFather = document.getElementById('first_father');
-  const secondFather = document.getElementById('second_father');
-  const firstDropdown = document.getElementById('first_dropdown');
-  const secondDropdown = document.getElementById('second_dropdown');
+                if (firstFather && firstDropdown) {
+                    const firstStyles = getComputedStyle(firstFather);
+                    const firstBgColor = firstStyles.backgroundColor;
+                    firstDropdown.style.backgroundColor = firstBgColor;
+                }
 
-  if (firstFather && secondFather && firstDropdown && secondDropdown) {
-    const getValue = (child: HTMLElement) => getComputedStyle(child).getPropertyValue('background-color');
+                if (secondFather && secondDropdown) {
+                    const secondStyles = getComputedStyle(secondFather);
+                    const secondBgColor = secondStyles.backgroundColor;
+                    
+                    secondDropdown.style.backgroundColor = secondBgColor;
+                }
+            });
+        };
+    
 
-    const changeColors = () => {
-      firstDropdown.style.backgroundColor = getValue(firstFather);
-      secondDropdown.style.backgroundColor = getValue(secondFather);
-    };
+    onMount(() => {
+            const firstFather = document.getElementById('first_father');
+            const secondFather = document.getElementById('second_father');
+            const firstDropdown = document.getElementById('first_dropdown');
+            const secondDropdown = document.getElementById('second_dropdown');
 
-    changeColors();
-    console.log('Hello, world');
-  } else {
-    console.warn("Some elements not found in the DOM.");
-  }
-});
+            if (firstFather && firstDropdown) {
+                const firstStyles = getComputedStyle(firstFather);
+                const firstBgColor = firstStyles.backgroundColor;
+                
+                firstDropdown.style.backgroundColor = firstBgColor;
+            }
 
+            if (secondFather && secondDropdown) {
+                const secondStyles = getComputedStyle(secondFather);
+                const secondBgColor = secondStyles.backgroundColor;
+                
+                secondDropdown.style.backgroundColor = secondBgColor;
+            }
+    });
 </script>
 
-{#if data.user}
+{#if data?.user}
 <body id="bg">
   <div id="wrapper">
     <header id="header">
@@ -146,6 +162,8 @@ onMount(() => {
     </footer>
     </div>    
 </body>
+{:else}
+  <p>Loading or not authenticated...</p>
 {/if}
 
 <style lang='scss'>
