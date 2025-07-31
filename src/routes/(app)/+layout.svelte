@@ -11,51 +11,6 @@
         down: 100,
         ratio: 1
     }
-
-    if (typeof window !== 'undefined') {
-        requestAnimationFrame(() => {
-                const firstFather = document.getElementById('first_father');
-                const secondFather = document.getElementById('second_father');
-                const firstDropdown = document.getElementById('first_dropdown');
-                const secondDropdown = document.getElementById('second_dropdown');
-
-
-                if (firstFather && firstDropdown) {
-                    const firstStyles = getComputedStyle(firstFather);
-                    const firstBgColor = firstStyles.backgroundColor;
-                    firstDropdown.style.backgroundColor = firstBgColor;
-                }
-
-                if (secondFather && secondDropdown) {
-                    const secondStyles = getComputedStyle(secondFather);
-                    const secondBgColor = secondStyles.backgroundColor;
-                    
-                    secondDropdown.style.backgroundColor = secondBgColor;
-                }
-            });
-        };
-    
-
-    onMount(() => {
-            const firstFather = document.getElementById('first_father');
-            const secondFather = document.getElementById('second_father');
-            const firstDropdown = document.getElementById('first_dropdown');
-            const secondDropdown = document.getElementById('second_dropdown');
-
-            if (firstFather && firstDropdown) {
-                const firstStyles = getComputedStyle(firstFather);
-                const firstBgColor = firstStyles.backgroundColor;
-                
-                firstDropdown.style.backgroundColor = firstBgColor;
-            }
-
-            if (secondFather && secondDropdown) {
-                const secondStyles = getComputedStyle(secondFather);
-                const secondBgColor = secondStyles.backgroundColor;
-                
-                secondDropdown.style.backgroundColor = secondBgColor;
-            }
-    });
 </script>
 
 {#if data?.user}
@@ -117,7 +72,6 @@
           <li id='second_father' class="dropdown">
             <a href="/"> {data.user.username} </a>
             <div class="dropdown_content" id="second_dropdown">
-              <a href="/profile">Profile</a>
               <a href="/">Settings</a>
               <a href="/">Log Out</a>
             </div>
@@ -163,7 +117,7 @@
     </div>    
 </body>
 {:else}
-  <p>Loading or not authenticated...</p>
+  <p>not authenticated</p>
 {/if}
 
 <style lang='scss'>
@@ -279,6 +233,14 @@ header {
 
           div {
             display: none;
+
+            &#first_dropdown {
+              background-color: color.adjust($color: variables.$menu, $lightness: variables.$step_str * 6);
+            }
+
+            &#second_dropdown {
+              background-color: color.adjust($color: variables.$menu, $lightness: variables.$step_str * 1);
+            }
           }
 
           &.dropdown:hover .dropdown_content {
