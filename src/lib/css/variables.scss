@@ -19,17 +19,25 @@ $minor_heading: #324041;
 $hover_brt: 106%;
 $active_brt: 112%;
 $content_alpha: 0.02;
-$system_ui: "Segoe_UI";
+// $descent_system_ui: "Descent_Segoe_UI";
+// $system_ui: "Segoe_UI";
 $monospace_ui: "CascadiaCode";
+$system-ui: system-ui, "Segoe UI", "Roboto", "Ubuntu", "Roboto", "Oxygen-Sans", "Ubuntu", "Cantarell", "Helvetica", "Arial", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
+// @font-face{
+//     font-family: "Descent_Segoe_UI";
+//     src: url(../fonts/SegoeUI-VF.ttf);
+//     descent-override: 0%;
+    
+// }
+
+// @font-face{
+//     font-family: "Segoe_UI";
+//     src: url(../fonts/SegoeUI-VF.ttf);
+// }
 
 
-@font-face{
-    font-family: "Segoe_UI";
-    src: url(../fonts/SegoeUI-VF.ttf);
-    descent-override: 0%;
-}
-
-@font-face{
-    font-family: "CascadiaCode";
-    src: url(../fonts/CascadiaCode.ttf);
-}
+// @font-face{
+//     font-family: "CascadiaCode";
+//     src: url(../fonts/CascadiaCode.ttf);
+// }

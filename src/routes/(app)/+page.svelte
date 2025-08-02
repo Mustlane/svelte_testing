@@ -31,12 +31,6 @@
 
     const motm: string[] | null = []
 </script>
-
-<!-- <h1>Hi, {data.user.username}!</h1>
-<p>Your user ID is {data.user.id}.</p>
-<form method="post" action="?/logout" use:enhance>
-	<button>Sign out</button>
-</form> -->
         <div id="content">
             <div id="major">
                 <div id="latest_downloads">

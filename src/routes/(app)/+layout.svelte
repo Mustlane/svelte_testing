@@ -53,7 +53,7 @@
       <div id="menu">
         <ul>
           <li id='first_father' class="dropdown">
-            <a href="/" class="dropdown_a">Containers</a>
+            <a href="/" class="dropdown_a_first">Containers</a>
             <div class="dropdown_content" id="first_dropdown">
               <a href="https://jellyfin.mustlane.com">Jellyfin</a>
               <a href="https://mustlane.com">Jellyseer</a>
@@ -70,7 +70,7 @@
             <a href="/">Support</a>
           </li>
           <li id='second_father' class="dropdown">
-            <a href="/"> {data.user.username} </a>
+            <a class="dropdown_a_second" href="/"> {data.user.username} </a>
             <div class="dropdown_content" id="second_dropdown">
               <a href="/">Settings</a>
               <a href="/">Log Out</a>
@@ -130,7 +130,7 @@
     box-sizing: inherit;
 }
 
-body {
+:global(body) {
     background-color: variables.$body;
     box-sizing: border-box;
     color: variables.$text;
@@ -215,16 +215,21 @@ header {
 
 #menu {
     border-radius: 7px 7px 0 0;
+    height: 50px;
     ul {
         width: 100%;
 
       li {
           position: relative;
           list-style: none;
-          line-height: 0;
 
           &:first-child {
             border-radius: 7px 0 0 0;
+
+            .dropdown_a_first {
+              border-radius: 7px 0 0 0;
+              font: 12;
+            }
           }
 
           &:last-child {
@@ -256,6 +261,7 @@ header {
 
             &:last-child>img {
                 width: 50px;
+                height: 50px;
             };
 
             a {
@@ -265,8 +271,9 @@ header {
                 text-align: center;
                 line-height: 50px;
                 font-size: 13px;
-                font-weight: 900;
+                font-weight: 600;
                 color: variables.$text;
+                white-space: nowrap;
 
                 &:hover {
                     background-color: variables.$menu_a_hover;
